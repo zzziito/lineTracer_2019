@@ -11,13 +11,18 @@
 
 과동아리인 돌쇠에서는 1학년 때 4번의 세미나를 합니다. 매주 만나서 1학기 때는 파이썬, C++프로그래밍을 배웠고 2학기 때는 다양한 소자를 연결해서 시계를 만드는 세미나와 라인트레이서 세미나를 했습니다. 한 달동안 아래 회로에다 알아서 프로그래밍을 해 넣어 라인을 가장 잘 따라가는 자동차를 만드는 것입니다. 
 
-![SE-af529450-6da5-4374-86f4-d48e314e3327 (1)](https://user-images.githubusercontent.com/52185595/114294762-a6b00180-9adb-11eb-95c9-030c4f3702ef.png)
+
 
 위 사진의 기판을 사용했습니다. 세미나는 다음과 같은 과정으로 진행됩니다. 
 
 > 기판에 납땜하기 -> keil, stlink 다운받기 -> 프로그래밍하기(c++)
 
-트랙에는 스쿨존 (세 줄로 표시된 두 지점 사이는 느리게 운행해야 함) , 정지선 등 미션이 포함되어 있습니다. 
+트랙에는 스쿨존 (세 줄로 표시된 두 지점 사이는 느리게 운행해야 함) , 정지선 등 미션이 포함되어 있습니다.
+
+결과 주행 영상은 다음과 같습니다. 
+
+![ezgif com-gif-maker (9)](https://user-images.githubusercontent.com/52185595/114297262-98b5ad00-9aea-11eb-8678-37323425ad5a.gif)
+
 
 ## 납땜하기
 
@@ -120,19 +125,19 @@ if(BUTTON2_PRESS)
 
 각각의 필터를 거친 후 데이터를 사진으로 보면:
 
-1.  프리 필터 
+##### 1.  프리 필터 
 
 ![SE-0e0043eb-aea6-49ce-8600-18c043242442](https://user-images.githubusercontent.com/52185595/114295065-d6f89f80-9add-11eb-9f16-d06e123e1c8f.png)
 
-2. 민 필터
+##### 2. 민 필터
 
 ![SE-247819ff-2c25-464a-89ab-255e56748221](https://user-images.githubusercontent.com/52185595/114295075-eb3c9c80-9add-11eb-9db7-313115f518f4.png)
 
-3. 렉티파이 필터 
+##### 3. 렉티파이 필터 
 
 ![SE-ccfc1961-045b-4a27-958e-5b216e623853](https://user-images.githubusercontent.com/52185595/114295094-014a5d00-9ade-11eb-91f2-9aaed2ec674b.png)
 
-4. 노멀라이즈 필터
+##### 4. 노멀라이즈 필터
 
 ![SE-e7c00252-fc56-4263-9773-ab5ffa9b175a](https://user-images.githubusercontent.com/52185595/114295102-07d8d480-9ade-11eb-9278-7545ccb51bd8.png)
 
@@ -354,6 +359,8 @@ for (i=0; i<128; i++){
 
 까만 선을 따라가도록 코드를 짰는데, 티끌을 까만거로 인식하거나 그래서 자꾸 트랙을 이탈하는 일이 생기는 문제가 있었습니다. 
 
+![ezgif com-gif-maker (10)](https://user-images.githubusercontent.com/52185595/114297310-d4e90d80-9aea-11eb-8828-5f3a784911fa.gif)
+
 그래서 노이즈 제거를 위한 변수를 여러가지 썼습니다. 
 
 1. q 이용 
@@ -379,9 +386,7 @@ speed_left = 650 - 3*(64 - direction);
 
 이런 식으로 좌우 모터에 넣으면 달리는 건 할 수 있었습니다. 
 
-이 정도 코드면 이만큼 움직일 수 있습니다. 
-
-좀 더 다듬으면 이만큼 움직일 수 있습니다. 
+![ezgif com-gif-maker (11)](https://user-images.githubusercontent.com/52185595/114297406-6b1d3380-9aeb-11eb-9c0e-30b088dd916e.gif)
 
 ### 스쿨존 미션 해결
 
@@ -433,6 +438,8 @@ if ((schoolZoneCounter>=6 && schoolZoneCounter<13) && b==0){
 
 이제 남은 것은 스쿨존 내에서 모터에 들어가는 속도를 줄이기만 하면 됩니다. 
 
+![ezgif com-gif-maker (12)](https://user-images.githubusercontent.com/52185595/114297493-eda5f300-9aeb-11eb-9450-491b7bd37b84.gif)
+
 ```c++
  for (i=0; i<127; i++){
       
@@ -455,13 +462,7 @@ if ((schoolZoneCounter>=6 && schoolZoneCounter<13) && b==0){
 
 정지는 이렇게 구현했습니다. stop 사인은 가로로 기니까, 가로 길이가 일정 이상 넘어가는 까만 부분이 있으면 stopbool 이 1 이 되도록 했습니다. 
 
-### flag
-
-flag 는 
-
-
-자꾸 이렇게 트랙을 벗어나길래, 뭔가 카메라 인식에 문제가 생겨도 돌던 방향으로 계속 돌 수 있도록 하는 것입니다. 
-
+![ezgif com-gif-maker (13)](https://user-images.githubusercontent.com/52185595/114297536-1af2a100-9aec-11eb-9440-39bb09eb2140.gif)
 
 
 ## keil uvision, stlink 설치하기 + 코드 업로드하기
