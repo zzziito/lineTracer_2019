@@ -1,4 +1,11 @@
-# 전자공학과 돌쇠 2학기 세미나 
+# 전자공학과 돌쇠 2학기 세미나
+
+## 목차
+1. 납땜하기
+2. 카메라 필터에 관해 (노이즈 없애기)
+3. 주행코드 설명 (line by line)
+4. keil uvision, stlink 설치하기 + 코드 업로드하기
+5. Sketchup 3d 프린터로 카메라 거치대 만들기 
 
 ## 임베디드 프로그래밍을 이용한 라인트레이서 만들기 
 
@@ -424,249 +431,10 @@ if ((schoolZoneCounter>=6 && schoolZoneCounter<13) && b==0){
 
 다음 포문을 거치는 동안 schoolZoneBulean은 파란색같이 변합니다. 이제 우리는 스쿨존을 인식할 수 있습니다!
 
+이제 남은 것은 스쿨존 내에서 모터에 들어가는 속도를 줄이기만 하면 됩니다. 
 
-돌쇠 코딩교육
-전자공학과 돌쇠 2학기 라인트레이서 세미나- 주행코드
-
-프로파일
- 박지원 ・ 2020. 1. 19. 22:46
-URL 복사  통계 
-첨부파일라인트레이서최종코드.txt 파일 다운로드
-라인트레이서 최종코드를 첨부합니다. 이를 main.c에 붙여넣으면 작동합니다. 코드를 한줄 한줄 설명하겠습니다. 
-
-다른 이유는 아니고... 내가 내년에 한양대 모형차대회 나갈 때 참고하려고... 올해는 휴학해서 못 나가게 되었으니ㅠ
-
- if(BUTTON2_PRESS)
-      {   
-         Delay_ms(100);
-         if(BUTTON2_PRESS)   mode = (mode+1)%4;
-      }
-      
-      if(BUTTON1_PRESS)
-      {
-         Delay_ms(100);
-         if(BUTTON1_PRESS)   mode = (mode+4-1)%4;
-      }
-      OLED_clearDisplay();
-      
-      switch(mode)
-      {
-         //Origin value
-         case 3:
-            for(i=0; i<128; i++)
-            {
-               OLED_drawYLine(i, 64-(CAM_DATA_PRE_1[i]/32),(CAM_DATA_PRE_1[i]/32));
-               if(max<CAM_BUFFER[i])
-                  max = CAM_BUFFER[i];
-               if(min>CAM_BUFFER[i])
-                  min = CAM_BUFFER[i];      
-            }
-         break;
-         //mean filter
-         case 1:
-            for(i=0; i<128; i++)
-            {
-               OLED_drawYLine(i, 64-(CAM_DATA_MEAN[i]/32),(CAM_DATA_MEAN[i]/32));
-               if(max<CAM_DATA_MEAN[i])
-                  max = CAM_DATA_MEAN[i];
-               if(min>CAM_DATA_MEAN[i])
-                  min = CAM_DATA_MEAN[i]; 
-            }
-         break;
-         //Rectifier
-         case 2:
-            for(i=0; i<128; i++)
-            {   
-               OLED_drawYLine(i, 64-(CAM_DATA_RECT[i]/32),(CAM_DATA_RECT[i]/32));
-               if(max<CAM_DATA_RECT[i])
-                  max = CAM_DATA_RECT[i];
-               if(min>CAM_DATA_RECT[i])
-                  min = CAM_DATA_RECT[i];
-            }
-         break;
-         //Normalize
-         case 0:
-            for(i=0; i<128; i++)
-            {   
-
-               OLED_drawYLine(i, 64-(CAM_DATA_NORMALIZED[i]/32),(CAM_DATA_NORMALIZED[i]/32));
-               if(max<CAM_DATA_NORMALIZED[i])
-                  max = CAM_DATA_NORMALIZED[i];
-               if(min>CAM_DATA_NORMALIZED[i])
-                  min = CAM_DATA_NORMALIZED[i]; 
-            }
-         break;
-         default:
-         break;
-      }
-이 부분은 버튼 누르면 카메라 필터 바뀌어서 디스플레이 되는 코드이므로 pass.
-
-​
-
-사실 달리기만 하는 코드는 짱 쉬움. 
-
-if(CAM_DATA_NORMALIZED[63] < 1024)
-   {
-      Motor_Go(500,500);
-            //motor running
-      if((CAM_DATA_NORMALIZED[48]+CAM_DATA_NORMALIZED[78])/2 < 450)
-      {
-         while(1)
-         {
-            Motor_Go(0,0);
-         }
-      }
-   }
-   
-   else if(CAM_DATA_NORMALIZED[63] == 1024)
-   {
-      int turningpoint = 0;
-      for(i=0;i<63;i++)
-      {
-         turningpoint = 950;
-         if((turningpoint+CAM_DATA_NORMALIZED[i])/2 < 984)
-         {
-            Motor_Go(300,600);
-         }
-         //left cornering
-         
-         else if((turningpoint+CAM_DATA_NORMALIZED[127-i])/2 < 984)
-         {
-            Motor_Go(600,300);
-         }
-         //right cornering
-      }   
-      
-   
-우리 동아리 어떤 조는 이렇게 짜기도 했음
-
-​
-
- 내 코드가 150줄을 넘어가는 것에 비해 이것은 매우 단순한 코드임 
-
-​
-
-가긴 가는데 정확도가 무진장 떨어짐
-
-​
-
-내 코드는 그에 비해 움직임이 아주 스무스하고 정확도가 높음 
-
-​
-
-그리고 스쿨존과 STOP이라는 미션을 수행할 수 있음
-
-​
-
-음..그렇다고 내가 본선에서 잘했다는건아니지만..ㅠㅠ
-
-​
-
-아무튼
-
-​
-
-
-이 스쿨존을 인식하고 이 구간에서는 속도를 늦춰야함
-
-​
-
-
-그리고 이 마크를 만나면 정지해야함
-
-​
-
-      a=0;
-      count=0;
-      max = 0;
-      min = 0xffff;
-      schoolZoneCounter=0;
-      q=0;
-      k=0;
-       
-        for(i=0; i<127; i++){
-                     stop[i]=0;
-                     filter[i]=0;
-         }
-이 부분은 그냥 초기에 변수 다 초기화하는 거임 int main(void)  앞부분에 변수 초기화할건지 while (1) 내에서 변수 초기화할건지 잘 구분하셈
-
-for (i=0; i<128; i++){
-      if(CAM_DATA_NORMALIZED[i]<700 && (CAM_DATA_MEAN[i]-CAM_DATA_PRE_1[i]<1000)){
-                q=q+1;
-        if(q>2){
-            filter[count] = CAM_DATA_MEAN[i] - CAM_DATA_PRE_1[i];
-            a=a+i;
-            count+=1;
-            schoolZone[i]=1;
-         }
-      }
-        else{
-            schoolZone[i]=0;
-                 q=0;
-         }    
-      }
-저번 포스팅에서 CAM_DATA_NORMALIZED 라는 데이터를 쓸 거고, 이 데이타는 경계값에 대한 정보를 준다고 했었음
-
-​
-
-이 부분은 노이즈 제거를 위한 코드임 
-
-​
-
-까만 선을 따라가도록 코드를 짰는데, 티끌을 까만거로 인식하거나 그래서 자꾸 트랙을 이탈하는 일이 생겼음
-
-
-트랙이탈
-그래서 노이즈 제거를 위한 변수를 여러가지 썼음 
-
-​
-
-1. q 이용 
-
-2. a 이용 
-
-​
-
-(나혼자 볼 거라서 변수 이름을 대충 지었는데 후회막심쓰...)
-
-​
-
-q는 이런 식임: 만약에 노이즈라면 하락하는 값이 몇 픽셀 안될 거고 유의미한 값이라면 그래도 트랙이 좀 굵으니까 많은 픽셀의 값이 낮아질 것 아님? 그래서  만약에 픽셀값이 특정 범위 내에 있다면 q를 1씩 증가시키고, q가 특정 갯수 이상일 때만 라인 따라가기 코드가 작동되도록 했음. 
-
-
-그리고 라인 따라가기 코드가 작동하면 (q>2이면) a라는 변수는 해당 픽셀값을 모두 더하고, count 는 해당 픽셀의 개수를 모두 더함. 
-
-그리고 direction = a/count 를 하면, 트랙의 가운데가 있는 픽셀의 위치를 알 수있음. 트랙의 가운데가 direction이라는 뜻이고, 
-
-이 direction을 
-
-speed_right = 650 + 5*(64 - direction);
-speed_left = 650 - 3*(64 - direction);
-이런 식으로 좌우 모터에 넣으면 달리는 건 할 수 있음
-
-
-접기/펴기
-트랙 따라가기
-그 정도 코드면 이만큼 움직임. 
-
-
-쌩쌩개잘달리는코드
-좀 더 다듬으면 이만큼 움직임 
-
-​
-
-아무튼  위에서 우리는 schoolZone 이라는 배열에 1을 집어넣었음 
-
-​
-
-그러므로 schoolZone 배열에는 이런 식으로 값이 들어갈것임
-
-
-그러면 나는 schoolZone 배열에서 0-1 이 바뀌는 횟수를 세서 검은 줄이 한 개인지 세 개인지 알 수 있을것임
-
-​
-
-for (i=0; i<127; i++){
+```c++
+ for (i=0; i<127; i++){
       
          if(schoolZone[i]!=schoolZone[i+1]){
             
@@ -675,53 +443,25 @@ for (i=0; i<127; i++){
                schoolZoneCounter+=1;
          }    
       }
-그 부분이 여기임
 
-​
+     k=stop[3]-stop[0]; 
 
-schoolZone[i]!=schoolZone[i+1] 이면 schoolZoneCounter 값이 1씩 늘어나도록 해 놓았음
-
-​
-
-그리고 여기가 쫌 중요한 스쿨존 인식 부분임 
-
-​
-
-
-내가 지금 마크를 보고 있다- 는 건 인지할 수 있는데, 
-
-​
-
-마크 본 이후부터 다시 마크를 볼 때까지가 스쿨존이라는 걸 인식하는건 무척 어려웠음 
-
-​
-
-골머리를 이틀간 썩이고 선배 도움을 받아서 작성하였음 
-
-if ((schoolZoneCounter>=6 && schoolZoneCounter<13) && b==0){ 
-          b=1;
+ if(k>60 && rightFlag==0 && leftFlag==0 && schoolZoneCounter>2 && schoolZoneCounter<6){
+        
+        stopbool=1;
+        
       }
-      
-       else if(schoolZoneCounter<6 && b==1){   
-         if(schoolZoneBulean == 0){
-            schoolZoneBulean =1;
-            b=0;
-         }
-         else {
-            schoolZoneBulean=0;
-            b=0;
-         }   
-      }
-(나도 boolean 인거 알오.. 진짜랑 헷갈릴까봐 저러케 쓴거야...)
+```
 
-​
+정지는 이렇게 구현했습니다. stop 사인은 가로로 기니까, 가로 길이가 일정 이상 넘어가는 까만 부분이 있으면 stopbool 이 1 이 되도록 했습니다. 
+
+### flag
+
+flag 는 
 
 
-다음 포문을 거치는 동안 schoolZoneBulean은 파란색같이 변한다. 이제 우리는 스쿨존을 인식할 수 있다! 
+자꾸 이렇게 트랙을 벗어나길래, 뭔가 카메라 인식에 문제가 생겨도 돌던 방향으로 계속 돌 수 있도록 하는 것입니다. 
 
-​
-
-이제 남은 것은 스쿨존 내에서 모터에 들어가는 속도를 줄이기만 하면 됩니다. 
 
 
 ## keil uvision, stlink 설치하기 + 코드 업로드하기
@@ -754,3 +494,7 @@ keil은 코드 에디터입니다. 화면 구성은 이렇습니다. 화살표�
 ![55](https://user-images.githubusercontent.com/52185595/114294932-c693f500-9adc-11eb-9de8-e22cac1660a5.png)
 
 그러면 이런 창이 뜨고, 여기서 start를 눌러주면 끝!
+
+## Sketchup 3d 프린터로 카메라 거치대 만들기 
+
+
